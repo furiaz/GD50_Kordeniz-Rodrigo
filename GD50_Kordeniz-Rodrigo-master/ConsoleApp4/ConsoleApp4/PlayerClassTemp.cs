@@ -9,7 +9,7 @@ namespace ConsoleApp4
     class PlayerClassTemp
     {
 
-        public string sCharacterName; // Name of the character
+        protected string sCharacterName; // Name of the character
         protected int iCharacterHealth; // Health of the character
         protected int iCharacterMaxHealth; // Max Health;
         protected int iMinimumDamage; // Minimum damage of player                                                                   
@@ -17,9 +17,9 @@ namespace ConsoleApp4
         protected int iPlayerDodgeValue; // Dodge value of player
         protected int iPlayerAccuracy; // Hit chance of player
         protected Random rRNGesus = new Random(); // Rand(iMinimumDamage,iMaximumDamage);
+        protected int iExperiance;
+        protected int iLevel;
         protected int iMana;
-        protected int iMaxMana;
-        protected int iDamage;
         public string Name
         {
             get
@@ -31,11 +31,12 @@ namespace ConsoleApp4
             {
                 sCharacterName = value;
 
-                
+                if (sCharacterName.Length == 0 || sCharacterName == null)
+                {
+                    sCharacterName = "Sir Montgomery Alexander Massachusetts Maximilian Finnegan Rasuuuuumus Hård";
+                }
             }
         }
-
-
 
         public int Health
         {
@@ -57,95 +58,77 @@ namespace ConsoleApp4
                 else if (iCharacterHealth > iCharacterMaxHealth)
                 {
                     iCharacterHealth = iCharacterMaxHealth;
-                    Console.WriteLine("You reached max health.");
-                }
-
-                
-
-            }
-        }
-
-        public int Mana
-        {
-            get
-            {
-                return iMana;
-            }
-
-            set
-            {
-                iMana = value;
-
-                if (iMana <= 0)
-                {
-                    iMana = 0;
-                    //Call death function
-                }
-
-                else if (iMana > iMaxMana)
-                {
-                    iMana = iMaxMana;
-                    Console.WriteLine("You reached max mana.");
+                    Console.WriteLine("You reached max health");
                 }
 
 
             }
         }
 
-        public int Dodge
+        public int Level
         {
             get
             {
-                return iPlayerDodgeValue;
+                return iLevel;
             }
-
             set
             {
-                iPlayerDodgeValue = value;
+                if (iExperiance > iLevel * 1000)
+                {
+                    iLevel++;
+                    iExperiance -= 1000;
+                }
+
+                else
+                {
+
+                }
+
             }
         }
 
         public bool PlayerAttack(int EnemyDodge)
         {
             int iTempAttackRoll = 0;
-            iTempAttackRoll = rRNGesus.Next(1, 7);
-            iTempAttackRoll += iPlayerAccuracy;
+            iTempAttackRoll = rRNGesus.Next(1, 21);
+            iTempAttackRoll = +iPlayerAccuracy;
 
             if (iTempAttackRoll >= EnemyDodge)
             {
-                Console.WriteLine("Your attack will hit!.");
+                Console.WriteLine("Get it Ma Boi");
                 return true;
 
             }
 
             else
             {
-                Console.WriteLine("Sorry boi, your attack missed.");
+                Console.WriteLine("Better Luck Next Time Ma Boi");
                 return false;
 
             }
 
         }
 
-        public void PlayerDamage(bool PlayerAttack)
+        public int PlayerDamage(bool PlayerAttack)
         {
 
             if (PlayerAttack)
             {
-                iDamage = rRNGesus.Next(iMinimumDamage, ((iMaximumDamage + 1)));
-                Console.WriteLine("You hitted the enemy for {0} damage", iDamage);
+                return rRNGesus.Next(iMinimumDamage, ((iMaximumDamage + 1)));
+
             }
 
             else
             {
-                iDamage = 0;
-                Console.WriteLine("Missed.");
+                return 0;
+                Console.WriteLine("Missed");
             }
         }
 
         public bool PlayerDodge(int EnemyAttack)
         {
             int iTempDefendRoll = 0;
+            iTempDefendRoll = rRNGesus.Next(1, 21);
             iTempDefendRoll = +iPlayerDodgeValue;
 
             if (iTempDefendRoll >= EnemyAttack)
@@ -159,73 +142,31 @@ namespace ConsoleApp4
             }
         }
 
-       /* public void PlayerTakesDamage(bool PlayerDodge, int EnemyDamage)
+        public void PlayerTakesDamage(bool PlayerDodge, int EnemyDamage)
         {
             if (PlayerDodge)
             {
-                Console.WriteLine("Dodged.");
+                Console.WriteLine("Dodged");
 
             }
 
             else
             {
                 Health -= EnemyDamage;
-                Console.WriteLine("Taken {0} Damage.", EnemyDamage);
+                Console.WriteLine("Taken {0} Damage", EnemyDamage);
             }
-        }*/
-
-        public virtual void SpecialAttack()
-        {
-            iDamage = 0;
         }
 
-        public virtual void SpecicalAttack_2()
+        public virtual int SpecialAttack()
         {
-            iDamage = 0;
+            return 0;
         }
 
-        public int AttackTemp(int PlayerInput, int EnemyDodge)
+        public virtual int SpecicalAttack_2()
         {
-            if ((PlayerInput == 2 || PlayerInput == 3) && iMana < 1)
-            {
-                Console.WriteLine("Not enough mana M'boi, using normal attack instead");
-                PlayerInput = 1;
-            }
-            switch (PlayerInput)
-
-            {
-                case 1:
-                    {
-                        bool IsSuccess = PlayerAttack(EnemyDodge);
-                        PlayerDamage(IsSuccess);
-                        return iDamage;
-                        break;
-                    }
-                case 2:
-                    {
-                        SpecialAttack();
-                        return iDamage;
-                        break;
-                    }
-                case 3:
-                    {
-                        SpecicalAttack_2();
-                        return iDamage;
-                        break;
-                    }
-                default:
-                    return 0;
-            }
-
-
-
-
+            return 0;
         }
 
-        public virtual void PrintChoices()
-        {
-
-        }
 
 
     }
@@ -238,25 +179,22 @@ namespace ConsoleApp4
             iCharacterMaxHealth = 100;
             iMinimumDamage = 10;
             iMaximumDamage = 16;
-            iPlayerDodgeValue = 7;
-            iPlayerAccuracy = 9;
-            iMaxMana = 3;
-            iMana = iMaxMana;
-            sCharacterName = InputName;
+            iPlayerDodgeValue = 5;
+            iPlayerAccuracy = 6;
+            iLevel = 1;
+
         }
 
-        public override void SpecialAttack()
+        public override int SpecialAttack()
         {
             Console.WriteLine("Fat Boi Special Smash!!!!!");
-            iMana -= 1;
-            iDamage = (Health / 5);
+            return (Health / 5);
         }
 
-        public override void SpecicalAttack_2()
+        public override int SpecicalAttack_2()
         {
             Console.WriteLine("Fat Boi Ultimate Attack");
-            iMana -= 1;
-            iDamage = iMaximumDamage;
+            return iMaximumDamage;
         }
 
 
@@ -272,35 +210,28 @@ namespace ConsoleApp4
             iMaximumDamage = 22;
             iPlayerDodgeValue = 10;
             iPlayerAccuracy = 11;
-            iMaxMana = 4;
-            iMana = iMaxMana;
-            sCharacterName = InputName;
+            iLevel = 1;
         }
 
-        public override void SpecialAttack()
+        public override int SpecialAttack()
         {
             int iTempCrit = 0;
             iTempCrit = rRNGesus.Next(1, 7);
-            iMana -= 1;
 
             if (iTempCrit > 4)
             {
-                Console.WriteLine("Stabby boi critical stabby");
-                iDamage = Convert.ToInt32(iMaximumDamage * 2.5);
+                return Convert.ToInt32(iMaximumDamage * 2.5);
             }
 
             else
             {
-                Console.WriteLine("Critical stabby missed");
-                iDamage = 0;
+                return 0;
             }
         }
 
-        public override void SpecicalAttack_2()
+        public override int SpecicalAttack_2()
         {
-            Console.WriteLine("Stabby boi secret move");
-            iMana -= 1;
-            iDamage = iPlayerDodgeValue + iPlayerAccuracy;
+            return iPlayerDodgeValue + iPlayerAccuracy;
         }
 
 
@@ -315,26 +246,20 @@ namespace ConsoleApp4
             iMaximumDamage = 24;
             iPlayerDodgeValue = 4;
             iPlayerAccuracy = 6;
-            iMaxMana = 5;
-            iMana = iMaxMana;
-            sCharacterName = InputName;
+            iLevel = 1;
         }
 
-        public override void SpecialAttack()
+        public override int SpecialAttack()
         {
-            Console.WriteLine("Wise boi Arcane shot");
-            iMana -= 1;
             int iSpellCount = 0;
             iSpellCount = rRNGesus.Next(1, 7);
 
-            iDamage = Convert.ToInt32((iMinimumDamage / 3) * iSpellCount);
+            return Convert.ToInt32((iMinimumDamage / 3) * iSpellCount);
         }
 
-        public override void SpecicalAttack_2()
+        public override int SpecicalAttack_2()
         {
-            Console.WriteLine("Wise boi mana bolt");
-            iDamage = iMana * iMinimumDamage;
-            iMana -= 1;
+            return iLevel * iMinimumDamage;
         }
         class Spooki_Boi : PlayerClassTemp
         {
@@ -346,20 +271,19 @@ namespace ConsoleApp4
                 iMaximumDamage = 25;
                 iPlayerDodgeValue = 2;
                 iPlayerAccuracy = 9;
-                iMaxMana = 3;
-                iMana = iMaxMana;
+                iLevel = 1;
             }
 
-            public override void SpecialAttack()
+            public override int SpecialAttack()
             {
                 Health += 10;
-                iDamage = rRNGesus.Next(iMinimumDamage, iMaximumDamage);
+                return rRNGesus.Next(iMinimumDamage, iMaximumDamage);
             }
 
-            public override void SpecicalAttack_2()
+            public override int SpecicalAttack_2()
             {
                 Health -= 10;
-                iDamage = iMaximumDamage * 3;
+                return iMaximumDamage * 3;
             }
         }
         class Holi_Boi : PlayerClassTemp
@@ -372,18 +296,17 @@ namespace ConsoleApp4
                 iMaximumDamage = 19;
                 iPlayerDodgeValue = 4;
                 iPlayerAccuracy = 7;
-                iMaxMana = 3;
-                iMana = iMaxMana;
+                iLevel = 1;
             }
 
-            public override void SpecialAttack()
+            public override int SpecialAttack()
             {
                 Health += 20;
-                iDamage = Convert.ToInt32((iMinimumDamage + iMaximumDamage) / 2);
+                return Convert.ToInt32((iMinimumDamage+iMaximumDamage)/2);
             }
-            public override void SpecicalAttack_2()
+            public override int SpecicalAttack_2()
             {
-                iDamage = Convert.ToInt32(iCharacterHealth / 3);
+                return Convert.ToInt32(iCharacterHealth/3);
             }
 
 
